@@ -1,28 +1,28 @@
-package fctreddit.clients;
+package fctreddit.clients.userOperations;
 
 import fctreddit.api.User;
+import fctreddit.api.rest.RestImage;
 import fctreddit.clients.rest.RestUsersClient;
 import fctreddit.clients.rest.RestImageClient;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.logging.Logger;
 
 public class DeleteUserClient {
 	private static Logger Log = Logger.getLogger(DeleteUserClient.class.getName());
 
-	public static void main(String[] args) throws IOException {
-		if (args.length != 3) {
-			System.err.println("Use: java " + DeleteUserClient.class.getCanonicalName() + " url userId password");
+	public static void main(String[] args) throws Exception {
+		if (args.length != 2) {
+			System.err.println("Use: java " + DeleteUserClient.class.getCanonicalName() + " userId password");
 			return;
 		}
 
-		String serverUrl = args[0];
-		String userId = args[1];
-		String password = args[2];
+		String userId = args[0];
+		String password = args[1];
 
-		var userClient = new RestUsersClient(URI.create(serverUrl));
-		var imageClient = new RestImageClient(URI.create(serverUrl));
+		// Use discovery-based constructors
+		var userClient = new RestUsersClient();
+		var imageClient = new RestImageClient(RestImage.SERVICE_NAME);
 
 		// Delete the user and get the deleted User object
 		User deletedUser = userClient.deleteUser(userId, password).value();

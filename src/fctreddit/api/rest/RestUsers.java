@@ -21,6 +21,8 @@ public interface RestUsers {
 	public static final String QUERY = "query";
 	public static final String USER_ID = "userId";
 	public static final String PASSWORD = "password";
+	public static final String SERVICE_NAME = "Users";
+
 
 	/**
 	 * Creates a new user.

@@ -1,42 +1,36 @@
-package fctreddit.clients;
-
-
+package fctreddit.clients.userOperations;
 
 import fctreddit.api.java.Result;
 import fctreddit.api.User;
+import fctreddit.api.rest.RestImage;
 import fctreddit.clients.rest.RestUsersClient;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.logging.Logger;
-
 
 public class UpdateUserClient {
 
 	private static Logger Log = Logger.getLogger(UpdateUserClient.class.getName());
 
-
-	// In UpdateUserClient.java
-	public static void main(String[] args) throws IOException {
-		if (args.length < 6 || args.length > 7) {
+	public static void main(String[] args) throws Exception {
+		if (args.length < 5 || args.length > 6) {
 			System.err.println("Use: java " + UpdateUserClient.class.getCanonicalName() +
-					" url userId oldpwd fullName email password [optional: avatarFilename]");
+					" userId oldpwd fullName email password [optional: avatarFilename]");
 			return;
 		}
 
-		String serverUrl = args[0];
-		String userId = args[1];
-		String oldpwd = args[2];
-		String fullName = args[3];
-		String email = args[4];
-		String newpwd = args[5];
+		String userId = args[0];
+		String oldpwd = args[1];
+		String fullName = args[2];
+		String email = args[3];
+		String newpwd = args[4];
 		String avatarUrl = null;
 
 		// Check if an avatar filename is provided
-		if (args.length == 7) {
-			String filename = args[6];
+		if (args.length == 6) {
+			String filename = args[5];
 			try {
-				Result<String> imageResult = AvatarHelper.associateAvatar(serverUrl, userId, oldpwd, filename);
+				Result<String> imageResult = ImageHelper.associateImage(RestImage.SERVICE_NAME, userId, oldpwd, filename);
 				if (imageResult.isOK()) {
 					avatarUrl = imageResult.value();
 					Log.info("Avatar uploaded: " + avatarUrl);
@@ -56,7 +50,8 @@ public class UpdateUserClient {
 			usr.setAvatarUrl(avatarUrl);
 		}
 
-		RestUsersClient client = new RestUsersClient(URI.create(serverUrl));
+		// Use the discovery-based client
+		RestUsersClient client = new RestUsersClient();
 		Result<User> result = client.updateUser(userId, oldpwd, usr);
 
 		if (result.isOK()) {

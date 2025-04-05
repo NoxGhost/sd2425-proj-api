@@ -17,6 +17,8 @@ public interface RestImage {
 	public static final String IMAGE_ID = "id";
 	public static final String USER_ID = "user";
 	public static final String PASSWORD = "pwd";
+	public static final String SERVICE_NAME = "Image";
+
 	/**
 	 * Create an image
 	 * 

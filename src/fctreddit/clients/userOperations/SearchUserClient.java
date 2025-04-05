@@ -1,11 +1,9 @@
-package fctreddit.clients;
-
+package fctreddit.clients.userOperations;
 
 import fctreddit.api.User;
 import fctreddit.clients.rest.RestUsersClient;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,18 +11,17 @@ public class SearchUserClient {
 
 	private static Logger Log = Logger.getLogger(SearchUserClient.class.getName());
 
+	public static void main(String[] args) throws Exception {
 
-	public static void main(String[] args) throws IOException {
-
-		if (args.length != 2) {
-			System.err.println("Use: java " + CreateUserClient.class.getCanonicalName() + " url query");
+		if (args.length != 1) {
+			System.err.println("Use: java " + SearchUserClient.class.getCanonicalName() + " query");
 			return;
 		}
 
-		String serverUrl = args[0];
-		String pattern = args[1];
+		String pattern = args[0];
 
-		var client = new RestUsersClient(URI.create(serverUrl));
+		// Use discovery-based client constructor
+		var client = new RestUsersClient();
 
 		var result = client.searchUsers(pattern);
 		if (result.isOK()) {
@@ -36,6 +33,5 @@ public class SearchUserClient {
 		} else {
 			Log.info("Search User failed with error: " + result.error());
 		}
-
 	}
 }

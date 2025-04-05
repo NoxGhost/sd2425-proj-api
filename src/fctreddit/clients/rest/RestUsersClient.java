@@ -1,5 +1,6 @@
 package fctreddit.clients.rest;
 
+import fctreddit.api.utils.Discovery;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class RestUsersClient {
-	private static Logger Log = Logger.getLogger(RestUsersClient.class.getName());
+	private static final Logger Log = Logger.getLogger(RestUsersClient.class.getName());
 
 	protected static final int READ_TIMEOUT = 5000;
 	protected static final int CONNECT_TIMEOUT = 5000;
@@ -35,19 +36,23 @@ public class RestUsersClient {
 	final ClientConfig config;
 
 	final WebTarget target;
-	
-	public RestUsersClient( URI serverURI ) {
-		this.serverURI = serverURI;
+
+	public RestUsersClient() throws Exception {
+		// Initialize Discovery
+		Discovery discovery = Discovery.getInstance(Discovery.DISCOVERY_ADDR, null, null);
+		discovery.start();
+
+		// Find the service
+		URI[] serviceURIs = discovery.knownUrisOf(RestUsers.SERVICE_NAME, 1);
+
+		// Use the first URI found
+		this.serverURI = serviceURIs[0];
 
 		this.config = new ClientConfig();
-		
-		config.property( ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-		config.property( ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-
-		
+		config.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
+		config.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
 		this.client = ClientBuilder.newClient(config);
-
-		target = client.target( serverURI ).path( RestUsers.PATH );
+		target = client.target(serverURI).path(RestUsers.PATH);
 	}
 		
 	public Result<String> createUser(User user) {
@@ -93,7 +98,6 @@ public class RestUsersClient {
 		else
 			return Result.ok( r.readEntity( User.class ));
 	}
-
 
 	public Result<User> updateUser(String userId, String pwd, User user) {
 		for(int i = 0; i < MAX_RETRIES; i++) {

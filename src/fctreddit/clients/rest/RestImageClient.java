@@ -1,5 +1,6 @@
 package fctreddit.clients.rest;
 
+import fctreddit.api.utils.Discovery;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -33,16 +34,21 @@ public class RestImageClient {
 
     final WebTarget target;
 
-    public RestImageClient(URI serverURI) {
-        this.serverURI = serverURI;
+    public RestImageClient(String serviceName)throws Exception {
+        // Initialize Discovery
+        Discovery discovery = Discovery.getInstance();
+        discovery.start();
+
+        // Find the service
+        URI[] serviceURIs = discovery.knownUrisOf(RestImage.SERVICE_NAME, 1);
+
+        // Use the first URI found
+        this.serverURI = serviceURIs[0];
 
         this.config = new ClientConfig();
-
         config.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
         config.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-
         this.client = ClientBuilder.newClient(config);
-
         target = client.target(serverURI).path(RestImage.PATH);
     }
 
