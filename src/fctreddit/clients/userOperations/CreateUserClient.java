@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.userOperations;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,7 +30,7 @@ public class CreateUserClient {
 		if (args.length == 6) {
 			String filename = args[5];
 			try {
-				Result<String> imageResult = AvatarHelper.associateAvatar(serverUrl, userId, password, filename);
+				Result<String> imageResult = ImageHelper.associateImage(serverUrl, userId, password, filename);
 				if (imageResult.isOK()) {
 					avatarUrl = imageResult.value();
 					Log.info("Avatar uploaded: " + avatarUrl);

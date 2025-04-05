@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.userOperations;
 
 import fctreddit.api.java.Result;
 import fctreddit.clients.rest.RestImageClient;
@@ -10,10 +10,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-public class AvatarHelper {
-    private static final Logger Log = Logger.getLogger(AvatarHelper.class.getName());
+public class ImageHelper {
+    private static final Logger Log = Logger.getLogger(ImageHelper.class.getName());
 
-    public static Result<String> associateAvatar(String serverUrl, String userId, String password, String filename) throws IOException {
+    public static Result<String> associateImage(String serverUrl, String userId, String password, String filename) throws IOException {
         Path avatarFilePath = Paths.get(filename);
 
         if (!Files.exists(avatarFilePath)) {

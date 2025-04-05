@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.userOperations;
 
 import fctreddit.api.User;
 import fctreddit.clients.rest.RestUsersClient;

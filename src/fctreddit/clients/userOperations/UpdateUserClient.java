@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.userOperations;
 
 
 
@@ -36,7 +36,7 @@ public class UpdateUserClient {
 		if (args.length == 7) {
 			String filename = args[6];
 			try {
-				Result<String> imageResult = AvatarHelper.associateAvatar(serverUrl, userId, oldpwd, filename);
+				Result<String> imageResult = ImageHelper.associateImage(serverUrl, userId, oldpwd, filename);
 				if (imageResult.isOK()) {
 					avatarUrl = imageResult.value();
 					Log.info("Avatar uploaded: " + avatarUrl);
