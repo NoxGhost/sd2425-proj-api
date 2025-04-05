@@ -77,10 +77,10 @@ public class RestImageClient {
         return Result.error(ErrorCode.TIMEOUT);
     }
 
-    public Result<byte[]> getImage(String imageId) {
+    public Result<byte[]> getImage(String userId, String imageId) {
         for(int i = 0; i < MAX_RETRIES; i++) {
             try {
-                Response r = target.path(imageId).request()
+                Response r = target.path(userId).path(imageId).request()
                         .accept(MediaType.APPLICATION_OCTET_STREAM)
                         .get();
 
@@ -109,7 +109,7 @@ public class RestImageClient {
     public Result<Void> deleteImage(String userId, String imageId, String pwd) {
         for(int i = 0; i < MAX_RETRIES; i++) {
             try {
-                Response r = target.path(imageId)
+                Response r = target.path(userId).path(imageId)
                         .queryParam(RestUsers.PASSWORD, pwd).request()
                         .accept( MediaType.APPLICATION_JSON)
                         .delete();
