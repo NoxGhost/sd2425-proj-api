@@ -23,7 +23,7 @@ public class UsersResource implements RestUsers {
 	public String createUser(User user) {
 		Log.info("createUser : " + user);
 
-		// Check if user data is valid
+		// Validate input
 		if (user == null || user.getUserId() == null || user.getPassword() == null ||
 				user.getFullName() == null || user.getEmail() == null) {
 			Log.info("User object invalid.");
@@ -31,17 +31,20 @@ public class UsersResource implements RestUsers {
 		}
 
 		try {
+			// Pre-check: see if user already exists
+			User existing = hibernate.get(User.class, user.getUserId());
+			if (existing != null) {
+				Log.info("User already exists: " + user.getUserId());
+				throw new WebApplicationException(Status.CONFLICT);
+			}
+
+			// Persist new user
 			hibernate.persist(user);
 		} catch (Exception e) {
-			if (e.getMessage() != null && e.getMessage().toLowerCase().contains("duplicate")) {
-				Log.info("User already exists: " + e.getMessage());
-				throw new WebApplicationException(Status.CONFLICT);
-			} else {
-				Log.severe("Unable to store user: " + e.getMessage());
-				throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
-			}
+			Log.severe("Unable to store user: " + e.getMessage());
+			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		return user.getUserId();
 	}
 
