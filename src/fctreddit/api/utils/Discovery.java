@@ -139,7 +139,7 @@ public class Discovery {
                     String[] msgElems = msg.split(DELIMITER);
                     if (msgElems.length == 2) { // periodic announcement
                         String receivedServiceName = msgElems[0];
-                        String receivedServiceURI = msgElems[1];
+                        URI receivedServiceURI = new URI(msgElems[1]);
 
                         System.out.printf("FROM %s (%s): %s\n", pkt.getAddress().getHostName(),
                                 pkt.getAddress().getHostAddress(), msg);
@@ -159,6 +159,8 @@ public class Discovery {
                     }
                 } catch (IOException e) {
                     // Do nothing
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }).start();
@@ -171,21 +173,15 @@ public class Discovery {
      * @param minReplies minimum number of requested URIs. Blocks until satisfied.
      * @return an array of URI with the service instances discovered.
      */
-    public URI[] knownUrisOf(String serviceName, int minReplies) throws URISyntaxException, InterruptedException {
+    public URI[] knownUrisOf(String serviceName, int minReplies) {
         while (true) {
             ServiceInfo info = services.get(serviceName);
             if (info != null && !info.serviceUris.isEmpty()) {
                 long elapsedMillis = Instant.now().toEpochMilli() - info.serviceTimestamp.toEpochMilli();
-                // Only return URIs if the elapsed time is within the allowed threshold
                 if (elapsedMillis <= DISCOVERY_ANNOUNCEMENT_EXPIRATION && info.serviceUris.size() >= minReplies) {
-                    URI[] discoveredUris = new URI[info.serviceUris.size()];
-                    for (int i = 0; i < info.serviceUris.size(); i++) {
-                        discoveredUris[i] = new URI(info.serviceUris.get(i));
-                    }
-                    return discoveredUris;
+                    return info.serviceUris.toArray(new URI[0]);
                 }
             }
-            Thread.sleep(900); // Wait a bit before trying again.
         }
     }
 

@@ -15,6 +15,9 @@ public class Hibernate {
 	private SessionFactory sessionFactory;
 	private static Hibernate instance;
 
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
 	
 
 	private Hibernate() {

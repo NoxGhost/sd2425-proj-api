@@ -2,7 +2,7 @@ package fctreddit.clients.userOperations;
 
 import fctreddit.api.java.Result;
 import fctreddit.api.User;
-import fctreddit.api.rest.RestImage;
+import fctreddit.clients.imageOperations.CreateImageClient;
 import fctreddit.clients.rest.RestUsersClient;
 
 import java.io.IOException;
@@ -13,9 +13,9 @@ public class UpdateUserClient {
 	private static Logger Log = Logger.getLogger(UpdateUserClient.class.getName());
 
 	public static void main(String[] args) throws Exception {
-		if (args.length < 5 || args.length > 6) {
+		if (args.length != 6) {
 			System.err.println("Use: java " + UpdateUserClient.class.getCanonicalName() +
-					" userId oldpwd fullName email password [optional: avatarFilename]");
+					" userId oldpwd fullName email password avatarFilename");
 			return;
 		}
 
@@ -24,31 +24,10 @@ public class UpdateUserClient {
 		String fullName = args[2];
 		String email = args[3];
 		String newpwd = args[4];
-		String avatarUrl = null;
-
-		// Check if an avatar filename is provided
-		if (args.length == 6) {
-			String filename = args[5];
-			try {
-				Result<String> imageResult = ImageHelper.associateImage(RestImage.SERVICE_NAME, userId, oldpwd, filename);
-				if (imageResult.isOK()) {
-					avatarUrl = imageResult.value();
-					Log.info("Avatar uploaded: " + avatarUrl);
-				} else {
-					Log.warning("Avatar upload failed: " + imageResult.error());
-					// Continue with user update without changing avatar
-				}
-			} catch (IOException e) {
-				Log.warning("Error processing avatar: " + e.getMessage());
-				// Continue with user update without changing avatar
-			}
-		}
+		String avatarUrl = args[5];;
 
 		// Create user object to update, with or without new avatar URL
-		User usr = new User(userId, fullName, email, newpwd);
-		if (avatarUrl != null) {
-			usr.setAvatarUrl(avatarUrl);
-		}
+		User usr = new User(userId, fullName, email, newpwd, avatarUrl);
 
 		// Use the discovery-based client
 		RestUsersClient client = new RestUsersClient();

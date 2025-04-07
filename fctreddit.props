@@ -1,4 +1,4 @@
-USERS_REST_SERVER_MAINCLASS=fctreddit.server.UsersServer
+USERS_REST_SERVER_MAINCLASS=fctreddit.server.restServers.UsersServer
 USERS_REST_PORT=8080
 USERS_REST_EXTRA_ARGS=
 IMAGE_REST_SERVER_MAINCLASS=rest.server.ImagesServer

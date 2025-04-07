@@ -22,7 +22,7 @@ public class DeleteUserClient {
 
 		// Use discovery-based constructors
 		var userClient = new RestUsersClient();
-		var imageClient = new RestImageClient(RestImage.SERVICE_NAME);
+		var imageClient = new RestImageClient();
 
 		// Delete the user and get the deleted User object
 		User deletedUser = userClient.deleteUser(userId, password).value();
